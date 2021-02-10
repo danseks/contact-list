@@ -1,7 +1,24 @@
-import React from "react";
+import React, { useContext, useState } from "react";
+import { Context } from "../store/appContext";
 import { Link } from "react-router-dom";
+import PropTypes from "prop-types";
 
-export const Addcontact = () => {
+export const Addcontact = props => {
+	const { actions, store } = useContext(Context);
+	const [state, setState] = useState({
+		showModal: false
+	});
+
+	const [data, setData] = useState({
+		email: "",
+		phone: "",
+		name: "",
+		address: ""
+	});
+	const inputChange = event => {
+		setData({ ...data, [event.target.name]: event.target.value });
+	};
+	console.log(data);
 	return (
 		<div className="container">
 			<div>
@@ -9,23 +26,59 @@ export const Addcontact = () => {
 				<form>
 					<div className="form-group">
 						<label>Full Name</label>
-						<input type="text" className="form-control" placeholder="Full Name" />
+						<input
+							className="form-control "
+							name="name"
+							onChange={inputChange}
+							type="text"
+							placeholder="Full Name"
+						/>
 					</div>
 					<div className="form-group">
 						<label>Email</label>
-						<input type="email" className="form-control" placeholder="Enter email" />
+						<input
+							className="form-control "
+							name="email"
+							onChange={inputChange}
+							type="text"
+							placeholder="Email"
+						/>
 					</div>
 					<div className="form-group">
 						<label>Phone</label>
-						<input type="phone" className="form-control" placeholder="Enter phone" />
+						<input
+							className="form-control "
+							name="phone"
+							onChange={inputChange}
+							type="number"
+							placeholder="Phone"
+						/>
 					</div>
 					<div className="form-group">
 						<label>Address</label>
-						<input type="text" className="form-control" placeholder="Enter address" />
+						<input
+							className="form-control "
+							name="address"
+							onChange={inputChange}
+							type="text"
+							placeholder="Address"
+						/>
 					</div>
-					<button type="button" className="btn btn-primary form-control">
-						save
-					</button>
+					<Link to="/">
+						<button
+							onClick={() => {
+								if (store.currentUser) {
+									actions.editContact(data, store.currentUser);
+									actions.getContacts();
+									actions.cleanUser();
+								} else {
+									actions.cleanUser();
+								}
+							}}
+							className="btn btn-block btn-success">
+							Add Contact bro
+						</button>
+					</Link>
 					<Link className="mt-3 w-100 text-center" to="/">
 						or get back to contacts
 					</Link>
@@ -33,4 +86,8 @@ export const Addcontact = () => {
 			</div>
 		</div>
 	);
+};
+
+Addcontact.propTypes = {
+	id: PropTypes.string
 };
